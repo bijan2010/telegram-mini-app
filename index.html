@@ -1,44 +1,113 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fa">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Tonix App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-    <script
-        src="https://code.jquery.com/jquery-3.3.1.min.js"
-        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-        crossorigin="anonymous">
-    </script>
-
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <style>
         body {
             background-color: var(--tg-theme-bg-color);
             color: var(--tg-theme-text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            text-align: center;
+        }
+        .circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background-color: black;
+            color: lime;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+            flex-direction: column;
+        }
+        .stats {
+            margin: 10px 0;
+        }
+        button {
+            background-color: lime;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 5px;
         }
     </style>
-
 </head>
 <body>
-    <p id="firstname">Hello World</p>
-    <button onclick="sendData()">Send Data</button>
-    <button id="closeApp" onclick="closeApp()">Close App</button>
-    
+    <div class="container">
+        <div class="stats">
+            <p>سود کل: <span id="totalProfit">150K TNX</span></p>
+            <p>سود روزانه: <span id="dailyProfit">5K TNX</span></p>
+            <p>موجودی: <span id="balance">201.1K TNX</span></p>
+        </div>
+        <div class="circle" id="farmingCircle">
+            <p>Farming t<span id="farmingRate">0.3</span></p>
+            <p id="countdown">23h 8m 47s</p>
+        </div>
+        <button onclick="boostFarming()">افزایش سرعت برداشت</button>
+    </div>
+    <button id="closeApp" onclick="closeApp()">بستن برنامه</button>
+
     <script>
         const tg = window.Telegram.WebApp;
-        console.log(tg.initDataUnsafe)
-        function sendData() {
-            $.ajax({
-                url: '/process',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({ 'value': tg.initData }),
-            });
-        };
+        let totalProfit = 150000;
+        let dailyProfit = 5000;
+        let balance = 201100;
+        let farmingRate = 0.3;
+        let farmingInterval;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateStats();
+            startFarmingCountdown();
+        });
+
+        function updateStats() {
+            document.getElementById('totalProfit').innerText = `${totalProfit} TNX`;
+            document.getElementById('dailyProfit').innerText = `${dailyProfit} TNX`;
+            document.getElementById('balance').innerText = `${balance} TNX`;
+            document.getElementById('farmingRate').innerText = farmingRate;
+        }
+
+        function startFarmingCountdown() {
+            let countdownTime = 4 * 60 * 60; // 4 ساعت به ثانیه
+            farmingInterval = setInterval(() => {
+                if (countdownTime <= 0) {
+                    clearInterval(farmingInterval);
+                    balance += dailyProfit;
+                    totalProfit += dailyProfit;
+                    updateStats();
+                    startFarmingCountdown();
+                } else {
+                    countdownTime--;
+                    let hours = Math.floor(countdownTime / 3600);
+                    let minutes = Math.floor((countdownTime % 3600) / 60);
+                    let seconds = countdownTime % 60;
+                    document.getElementById('countdown').innerText = `${hours}h ${minutes}m ${seconds}s`;
+                }
+            }, 1000);
+        }
+
+        function boostFarming() {
+            dailyProfit += 1000;
+            updateStats();
+        }
+
         function closeApp() {
-            tg.close()
-        };
+            tg.close();
+        }
     </script>
 </body>
 </html>
