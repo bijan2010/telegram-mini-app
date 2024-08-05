@@ -8,18 +8,30 @@
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <style>
         body {
-            background-color: var(--tg-theme-bg-color);
-            color: var(--tg-theme-text-color);
+            background-color: #0D0D0D;
+            color: #FFFFFF;
+            font-family: Arial, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100vh;
             margin: 0;
-            font-family: Arial, sans-serif;
+            padding: 0;
         }
         .container {
             text-align: center;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            padding: 10px 0;
+            background-color: #1A1A1A;
+            border-bottom: 1px solid #333;
+        }
+        .stats div {
+            flex: 1;
         }
         .circle {
             width: 200px;
@@ -30,37 +42,57 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 20px 0;
+            margin: 20px auto;
             flex-direction: column;
+            border: 2px solid lime;
         }
-        .stats {
-            margin: 10px 0;
+        .balance-container {
+            background-color: #1A1A1A;
+            padding: 10px;
+            margin-top: 20px;
+            width: calc(100% - 40px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 8px;
         }
-        button {
+        .balance-container p {
+            margin: 0;
+        }
+        .boost-button {
             background-color: lime;
             border: none;
             padding: 10px 20px;
             font-size: 16px;
             cursor: pointer;
-            margin: 5px;
+            margin: 20px;
+            border-radius: 8px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="stats">
-            <p>سود کل: <span id="totalProfit">150K TNX</span></p>
-            <p>سود روزانه: <span id="dailyProfit">5K TNX</span></p>
-            <p>موجودی: <span id="balance">201.1K TNX</span></p>
+            <div>
+                <p>سود کل</p>
+                <p id="totalProfit">150K TNX</p>
+            </div>
+            <div>
+                <p>سود روزانه</p>
+                <p id="dailyProfit">5K TNX</p>
+            </div>
+        </div>
+        <div class="balance-container">
+            <p>موجودی</p>
+            <p id="balance">201.1K TNX</p>
+            <button class="boost-button">دوباره سرمایه‌گذاری</button>
         </div>
         <div class="circle" id="farmingCircle">
             <p>Farming t<span id="farmingRate">0.3</span></p>
             <p id="countdown">23h 8m 47s</p>
         </div>
-        <button onclick="boostFarming()">افزایش سرعت برداشت</button>
+        <button class="boost-button" onclick="boostFarming()">افزایش سرعت برداشت</button>
     </div>
-    <button id="closeApp" onclick="closeApp()">بستن برنامه</button>
-
     <script>
         const tg = window.Telegram.WebApp;
         let totalProfit = 150000;
